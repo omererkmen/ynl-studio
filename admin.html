@@ -11,13 +11,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#ECEEE8;
-  --ink:#11151A;
-  --muted:#5B636B;
-  --line:#C9CEC6;
-  --signal:#FF4A1C;
-  --signal-ink:#B02C08;
-  --card:#F7F8F4;
+  --paper:#F4F1E4;
+  --ink:#111111;
+  --muted:#5E5A4C;
+  --line:#D6D1BD;
+  --signal:#FFD60A;
+  --card:#FBF9F0;
+  --err:#B02C08;
   --font-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
   --font-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
@@ -26,30 +26,39 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
+a{color:inherit}
 .wrap{max-width:980px;margin:0 auto;padding:28px clamp(16px,4vw,40px) 64px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px}
 .brand{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--ink)}
 .brand img{display:block;width:44px;height:44px;border-radius:10px}
 .who{font-size:14px;color:var(--muted);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 button{font:inherit;cursor:pointer;border-radius:10px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);padding:10px 16px;font-weight:600}
+button:hover{background:var(--signal);color:var(--ink)}
 button.ghost{background:transparent;color:var(--ink)}
+button.ghost:hover{background:var(--signal)}
 button.small{padding:6px 12px;font-size:13px}
-button.danger{border-color:var(--signal-ink);background:var(--signal-ink)}
-button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+button.danger{border-color:var(--err);background:var(--err);color:#fff}
+button[disabled]{opacity:.6;cursor:progress}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 h1{font-family:var(--font-display);font-weight:800;font-size:clamp(30px,5vw,44px);letter-spacing:-.03em;line-height:1.05}
+h2{font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:-.02em;margin-bottom:14px}
 .label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 
 .login{max-width:380px;margin:12vh auto 0;background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:14px}
-.login label{display:block;margin-bottom:6px}
-input[type=email],input[type=password]{width:100%;font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:12px 14px}
-.msg{font-size:14px;color:var(--signal-ink);font-weight:600;min-height:1.4em}
+label.f{display:block}
+label.f > span{display:block;margin-bottom:6px}
+input[type=email],input[type=password],input[type=text],input[type=url],input[type=number],select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:11px 13px}
+textarea{min-height:84px;resize:vertical}
+.msg{font-size:14px;color:var(--err);font-weight:600;min-height:1.4em}
 
 .tabs{display:flex;gap:8px;margin:20px 0 24px;flex-wrap:wrap}
 .tabs button[aria-selected=false]{background:transparent;color:var(--ink)}
+.tabs button[aria-selected=false]:hover{background:var(--signal)}
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
 .tile,.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
 .tile .n{font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums}
-.tile.accent .n{color:var(--signal-ink)}
+.tile.accent{background:var(--signal);border-color:var(--ink)}
+.tile.accent .label{color:var(--ink)}
 .range{display:flex;gap:8px;margin-bottom:12px}
 .chart{display:flex;align-items:flex-end;gap:3px;height:140px}
 .chart .col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
@@ -64,40 +73,55 @@ input[type=email],input[type=password]{width:100%;font:inherit;color:var(--ink);
 .fine{font-size:13px;color:var(--muted);margin-top:8px}
 .fine button{all:unset;cursor:pointer;text-decoration:underline;color:var(--ink)}
 .bar-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.sub{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-.sub:last-child{border-bottom:0}
-.sub .mail{overflow-wrap:anywhere;min-width:0}
-.sub .date{font-size:13px;color:var(--muted)}
-.sub .acts{display:flex;gap:6px;flex:none}
-@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}}
+
+.li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li .main{display:flex;gap:12px;align-items:center;min-width:0}
+.li .txt{min-width:0;overflow-wrap:anywhere}
+.li .date{font-size:13px;color:var(--muted)}
+.li .acts{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.avatar{flex:none;width:48px;height:48px;border-radius:10px;background:var(--signal);border:1px solid var(--ink);overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--ink);border-radius:999px;padding:1px 8px;margin-left:6px}
+.tag.off{border-color:var(--line);color:var(--muted)}
+
+.editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:6px}
+.editor .wide{grid-column:1 / -1}
+.editor .check{display:flex;gap:8px;align-items:center}
+.editor .check input{width:17px;height:17px;accent-color:var(--ink)}
+.editor .acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.photo-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.inq{padding:14px 0;border-bottom:1px solid var(--line)}
+.inq:last-child{border-bottom:0}
+.inq .head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.inq .body{margin-top:8px;white-space:pre-wrap;overflow-wrap:anywhere}
+.stack{display:flex;flex-direction:column;gap:16px}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.two,.editor{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <form class="login" id="login" hidden>
-    <a class="brand" href="/"><img src="/logo.jpg" alt="YNK logosu" width="44" height="44">YNK.studio Yönetim</a>
-    <div>
-      <label class="label" for="email">E-posta</label>
-      <input type="email" id="email" autocomplete="username" required>
-    </div>
-    <div>
-      <label class="label" for="password">Şifre</label>
-      <input type="password" id="password" autocomplete="current-password" required>
-    </div>
+    <a class="brand" href="/"><img src="/logo.jpg" alt="" width="44" height="44">YNK.studio Yönetim</a>
+    <label class="f" for="email"><span class="label">E-posta</span><input type="email" id="email" autocomplete="username" required></label>
+    <label class="f" for="password"><span class="label">Şifre</span><input type="password" id="password" autocomplete="current-password" required></label>
     <button type="submit" id="loginBtn">Giriş yap</button>
     <p class="msg" id="loginMsg" role="status" aria-live="polite"></p>
   </form>
 
   <div id="app" hidden>
     <div class="top">
-      <a class="brand" href="/"><img src="/logo.jpg" alt="YNK logosu" width="44" height="44">YNK.studio</a>
+      <a class="brand" href="/"><img src="/logo.jpg" alt="" width="44" height="44">YNK.studio</a>
       <div class="who"><span id="who"></span><button class="ghost small" id="logout" type="button">Çıkış</button></div>
     </div>
     <h1>Yönetim</h1>
-    <div class="tabs" role="tablist">
-      <button type="button" role="tab" id="tabStats" aria-selected="true">Analitik</button>
-      <button type="button" role="tab" id="tabSubs" aria-selected="false">Aboneler</button>
+    <div class="tabs" role="tablist" id="tabs">
+      <button type="button" role="tab" data-tab="stats" aria-selected="true">Analitik</button>
+      <button type="button" role="tab" data-tab="subs" aria-selected="false">Aboneler</button>
+      <button type="button" role="tab" data-tab="inq" aria-selected="false">Başvurular</button>
+      <button type="button" role="tab" data-tab="team" aria-selected="false">Ekip</button>
+      <button type="button" role="tab" data-tab="content" aria-selected="false">İçerikler</button>
     </div>
     <p class="msg" id="appMsg" role="status" aria-live="polite"></p>
 
@@ -118,7 +142,7 @@ input[type=email],input[type=password]{width:100%;font:inherit;color:var(--ink);
       </div>
       <div class="two">
         <div class="panel"><p class="label" style="margin-bottom:8px">Yönlendiren siteler</p><div id="refs"></div></div>
-        <div class="panel"><p class="label" style="margin-bottom:8px">Sayfalar</p><div id="pages"></div></div>
+        <div class="panel"><p class="label" style="margin-bottom:8px">Sayfalar ve kaynak etiketleri</p><div id="pages"></div></div>
       </div>
       <p class="fine">Her tarayıcı oturumunda bir sayfa bir kez sayılır. <span id="ownState"></span> <button type="button" id="ownToggle"></button></p>
     </section>
@@ -130,6 +154,65 @@ input[type=email],input[type=password]{width:100%;font:inherit;color:var(--ink);
       </div>
       <div class="panel" id="subList"></div>
     </section>
+
+    <section id="inq" hidden>
+      <div class="bar-top"><p><strong id="inqCount">0</strong> başvuru</p></div>
+      <div class="panel" id="inqList"></div>
+    </section>
+
+    <section id="team" hidden class="stack">
+      <form class="panel" id="teamForm" novalidate>
+        <h2 id="teamFormTitle">Yeni ekip üyesi</h2>
+        <div class="editor">
+          <label class="f" for="tName"><span class="label">Ad soyad</span><input type="text" id="tName" maxlength="120" required></label>
+          <label class="f" for="tRole"><span class="label">Rol</span><input type="text" id="tRole" maxlength="120" placeholder="Örn. Kurucu, Yapımcı"></label>
+          <label class="f wide" for="tBio"><span class="label">Kısa tanıtım</span><textarea id="tBio" maxlength="400"></textarea></label>
+          <label class="f" for="tLink"><span class="label">Bağlantı (LinkedIn vb.)</span><input type="url" id="tLink" maxlength="300" placeholder="https://"></label>
+          <label class="f" for="tSort"><span class="label">Sıra (küçük olan önce)</span><input type="number" id="tSort" value="0" step="1"></label>
+          <div class="wide">
+            <span class="label" style="display:block;margin-bottom:6px">Fotoğraf</span>
+            <div class="photo-row">
+              <div class="avatar" id="tPreview">?</div>
+              <input type="file" id="tPhoto" accept="image/*" aria-label="Fotoğraf seç">
+              <button type="button" class="ghost small" id="tPhotoClear">Fotoğrafı kaldır</button>
+            </div>
+            <p class="fine">Fotoğraf kare kırpılıp küçültülerek kaydedilir.</p>
+          </div>
+          <label class="check wide" for="tVisible"><input type="checkbox" id="tVisible" checked><span>Sitede göster</span></label>
+          <div class="acts wide">
+            <button type="submit" id="tSave">Kaydet</button>
+            <button type="button" class="ghost" id="tCancel" hidden>Vazgeç</button>
+          </div>
+        </div>
+      </form>
+      <div class="panel" id="teamList"></div>
+    </section>
+
+    <section id="content" hidden class="stack">
+      <form class="panel" id="contentForm" novalidate>
+        <h2 id="contentFormTitle">Yeni içerik</h2>
+        <div class="editor">
+          <label class="f wide" for="cTitle"><span class="label">Başlık</span><input type="text" id="cTitle" maxlength="200" required></label>
+          <label class="f wide" for="cUrl"><span class="label">Bağlantı</span><input type="url" id="cUrl" maxlength="500" placeholder="https://" required></label>
+          <label class="f" for="cKind"><span class="label">Tür</span>
+            <select id="cKind">
+              <option value="bolum">0'dan 1'e bölümü</option>
+              <option value="video" selected>Video</option>
+              <option value="yazi">Yazı</option>
+              <option value="diger">Diğer</option>
+            </select>
+          </label>
+          <label class="f" for="cSort"><span class="label">Sıra (küçük olan önce)</span><input type="number" id="cSort" value="0" step="1"></label>
+          <label class="check wide" for="cVisible"><input type="checkbox" id="cVisible" checked><span>Sitede göster</span></label>
+          <div class="acts wide">
+            <button type="submit" id="cSave">Kaydet</button>
+            <button type="button" class="ghost" id="cCancel" hidden>Vazgeç</button>
+          </div>
+        </div>
+        <p class="fine">Sitede en fazla 9 içerik görünür. YouTube bağlantılarının kapak görseli kendiliğinden gelir.</p>
+      </form>
+      <div class="panel" id="contentList"></div>
+    </section>
   </div>
 </div>
 
@@ -138,14 +221,18 @@ const SB_URL = 'https://nrltvzxnqgqmxxvlaacq.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybHR2enhucWdxbXh4dmxhYWNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODE5MzcsImV4cCI6MjA4NzU1NzkzN30.mGGSYW_CfvMNotjxC5_vwf6NevvVpjwsudf11NH2CAY';
 const DAY = 24 * 60 * 60 * 1000;
 const $ = (id) => document.getElementById(id);
+const KIND_LABEL = { bolum: "0'dan 1'e", video: 'Video', yazi: 'Yazı', diger: 'Diğer' };
 
 let session = null;   // { token, email }
-let views = [];
-let subscribers = [];
+let views = [], subscribers = [], inquiries = [], team = [], content = [];
 let range = 30;
+let teamEditId = null, teamPhoto = null, contentEditId = null;
 
 function store(key, value) { try { value === null ? sessionStorage.removeItem(key) : sessionStorage.setItem(key, value); } catch (e) {} }
-function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined && text !== null) n.textContent = text; return n; }
+function btn(cls, text, onClick) { const b = el('button', cls, text); b.type = 'button'; b.addEventListener('click', onClick); return b; }
+function fmtDate(iso) { return new Date(iso).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' }); }
+function fail(err) { if (err && err.message !== 'unauthorized') $('appMsg').textContent = err.message || 'İşlem tamamlanamadı.'; }
 
 function showLogin(message) {
   session = null; store('ynk_admin', null);
@@ -174,6 +261,32 @@ async function fetchAll(table, query) {
   return all;
 }
 
+// Tabloya satır ekler ya da günceller; kaydedilen satırı döndürür.
+async function saveRow(table, id, data) {
+  const res = await api('/rest/v1/' + table + (id === null ? '' : '?id=eq.' + encodeURIComponent(id)), {
+    method: id === null ? 'POST' : 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(data)
+  });
+  const rows = await res.json().catch(() => []);
+  if (!res.ok || !rows.length) throw new Error('Kaydedilemedi (' + res.status + ').');
+  return rows[0];
+}
+async function deleteRow(table, id) {
+  const res = await api('/rest/v1/' + table + '?id=eq.' + encodeURIComponent(id), { method: 'DELETE' });
+  if (!res.ok) throw new Error('Silinemedi (' + res.status + ').');
+}
+// "Sil" düğmesi: ilk tıkta onay ister, ikinci tıkta siler.
+function deleteButton(onConfirm, redraw) {
+  return btn('ghost small', 'Sil', (e) => {
+    const box = e.currentTarget.parentNode;
+    const yes = btn('danger small', 'Evet, sil', async () => {
+      yes.disabled = true; $('appMsg').textContent = '';
+      try { await onConfirm(); } catch (err) { fail(err); }
+      redraw();
+    });
+    box.replaceChildren(yes, btn('ghost small', 'Vazgeç', redraw));
+  });
+}
+
 $('login').addEventListener('submit', async (e) => {
   e.preventDefault();
   $('loginBtn').disabled = true; $('loginMsg').textContent = '';
@@ -196,31 +309,28 @@ $('login').addEventListener('submit', async (e) => {
     $('loginBtn').disabled = false;
   }
 });
-
 $('logout').addEventListener('click', () => showLogin(''));
 
-function selectTab(name) {
-  $('tabStats').setAttribute('aria-selected', String(name === 'stats'));
-  $('tabSubs').setAttribute('aria-selected', String(name === 'subs'));
-  $('stats').hidden = name !== 'stats';
-  $('subs').hidden = name !== 'subs';
-}
-$('tabStats').addEventListener('click', () => selectTab('stats'));
-$('tabSubs').addEventListener('click', () => selectTab('subs'));
+const TABS = ['stats', 'subs', 'inq', 'team', 'content'];
+$('tabs').addEventListener('click', (e) => {
+  const name = e.target.dataset && e.target.dataset.tab; if (!name) return;
+  document.querySelectorAll('#tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+  TABS.forEach((t) => { $(t).hidden = t !== name; });
+  $('appMsg').textContent = '';
+});
 
+/* ---------- Analitik ---------- */
 function startOfToday() { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
 function dayKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function refHost(ref) {
   if (!ref) return null;
   try { const h = new URL(ref).hostname.replace(/^www\./, ''); return h === location.hostname.replace(/^www\./, '') ? null : h; } catch (e) { return null; }
 }
-
 function renderList(box, entries) {
   box.replaceChildren();
   if (!entries.length) { box.append(el('p', 'empty', 'Henüz veri yok.')); return; }
   entries.forEach(([k, n]) => { const r = el('div', 'row'); r.append(el('span', 'k', k), el('span', 'v', String(n))); box.append(r); });
 }
-
 function renderStats() {
   const t0 = startOfToday();
   const inLast = (days) => views.filter((v) => new Date(v.created_at).getTime() >= t0 - (days - 1) * DAY);
@@ -251,15 +361,14 @@ function renderStats() {
     const axis = el('div', 'axis'); axis.append(el('span', '', series[0].label), el('span', '', 'en yüksek: ' + max), el('span', '', series[series.length - 1].label));
     box.append(chart, axis);
   }
-
   const refs = {}, pages = {};
   rows.forEach((v) => {
     const r = refHost(v.referrer) || 'Doğrudan'; refs[r] = (refs[r] || 0) + 1;
     const p = v.page || '/'; pages[p] = (pages[p] || 0) + 1;
   });
-  const top = (o) => Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, 8);
-  renderList($('refs'), top(refs));
-  renderList($('pages'), top(pages));
+  const top = (o, n) => Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, n);
+  renderList($('refs'), top(refs, 8));
+  renderList($('pages'), top(pages, 12));
 }
 $('r7').addEventListener('click', () => { range = 7; renderStats(); });
 $('r30').addEventListener('click', () => { range = 30; renderStats(); });
@@ -277,33 +386,19 @@ $('ownToggle').addEventListener('click', () => {
   renderOwn();
 });
 
+/* ---------- Aboneler ---------- */
 function renderSubs() {
   $('subCount').textContent = subscribers.length;
   const box = $('subList'); box.replaceChildren();
   if (!subscribers.length) { box.append(el('p', 'empty', 'Henüz abone yok.')); return; }
   subscribers.forEach((s) => {
-    const row = el('div', 'sub');
-    const left = el('div', 'mail'); left.append(el('div', '', s.email), el('div', 'date', new Date(s.created_at).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' })));
+    const row = el('div', 'li');
+    const txt = el('div', 'txt'); txt.append(el('div', '', s.email), el('div', 'date', fmtDate(s.created_at)));
     const acts = el('div', 'acts');
-    const del = el('button', 'ghost small', 'Sil'); del.type = 'button';
-    del.addEventListener('click', () => {
-      const yes = el('button', 'danger small', 'Evet, sil'); yes.type = 'button';
-      const no = el('button', 'ghost small', 'Vazgeç'); no.type = 'button';
-      no.addEventListener('click', renderSubs);
-      yes.addEventListener('click', async () => {
-        yes.disabled = true;
-        try {
-          const res = await api('/rest/v1/ynk_subscribers?id=eq.' + encodeURIComponent(s.id), { method: 'DELETE' });
-          if (!res.ok) throw new Error('Silinemedi (' + res.status + ').');
-          subscribers = subscribers.filter((x) => x.id !== s.id); renderSubs();
-        } catch (err) { if (err.message !== 'unauthorized') { $('appMsg').textContent = err.message; renderSubs(); } }
-      });
-      acts.replaceChildren(yes, no);
-    });
-    acts.append(del); row.append(left, acts); box.append(row);
+    acts.append(deleteButton(async () => { await deleteRow('ynk_subscribers', s.id); subscribers = subscribers.filter((x) => x.id !== s.id); }, renderSubs));
+    row.append(txt, acts); box.append(row);
   });
 }
-
 $('csv').addEventListener('click', () => {
   const lines = ['email,created_at'].concat(subscribers.map((s) => '"' + String(s.email).replace(/"/g, '""') + '",' + s.created_at));
   const a = document.createElement('a');
@@ -312,24 +407,180 @@ $('csv').addEventListener('click', () => {
   document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 });
 
+/* ---------- Başvurular ---------- */
+function renderInq() {
+  $('inqCount').textContent = inquiries.length;
+  const box = $('inqList'); box.replaceChildren();
+  if (!inquiries.length) { box.append(el('p', 'empty', 'Henüz başvuru yok.')); return; }
+  inquiries.forEach((q) => {
+    const item = el('div', 'inq');
+    const head = el('div', 'head');
+    const left = el('div', 'txt');
+    const title = el('div', '', q.name + (q.org ? ' · ' + q.org : '')); title.style.fontWeight = '600';
+    if (q.kind) title.append(el('span', 'tag', q.kind));
+    const mail = el('a', '', q.email); mail.href = 'mailto:' + q.email;
+    const meta = el('div', 'date'); meta.append(mail, document.createTextNode(' · ' + fmtDate(q.created_at)));
+    left.append(title, meta);
+    const acts = el('div', 'acts');
+    acts.append(deleteButton(async () => { await deleteRow('ynk_inquiries', q.id); inquiries = inquiries.filter((x) => x.id !== q.id); }, renderInq));
+    head.append(left, acts); item.append(head);
+    if (q.message) item.append(el('div', 'body', q.message));
+    box.append(item);
+  });
+}
+
+/* ---------- Ekip ---------- */
+function drawTeamPreview() {
+  const box = $('tPreview'); box.replaceChildren();
+  if (teamPhoto) { const img = el('img'); img.src = teamPhoto; img.alt = ''; box.append(img); }
+  else box.textContent = ($('tName').value.trim().charAt(0) || '?').toLocaleUpperCase('tr-TR');
+}
+// Seçilen görseli ortadan kare kırpar, 320 piksele küçültür ve JPEG veri adresine çevirir.
+function shrinkImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const side = Math.min(img.naturalWidth, img.naturalHeight), size = 320;
+      const c = document.createElement('canvas'); c.width = size; c.height = size;
+      const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, size, size);
+      ctx.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', 0.82));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Bu dosya görsel olarak açılamadı.')); };
+    img.src = url;
+  });
+}
+$('tPhoto').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0]; if (!file) return;
+  try { teamPhoto = await shrinkImage(file); drawTeamPreview(); } catch (err) { fail(err); }
+});
+$('tPhotoClear').addEventListener('click', () => { teamPhoto = null; $('tPhoto').value = ''; drawTeamPreview(); });
+$('tName').addEventListener('input', () => { if (!teamPhoto) drawTeamPreview(); });
+
+function resetTeamForm() {
+  teamEditId = null; teamPhoto = null;
+  $('teamForm').reset(); $('tVisible').checked = true; $('tSort').value = '0';
+  $('teamFormTitle').textContent = 'Yeni ekip üyesi'; $('tCancel').hidden = true;
+  drawTeamPreview();
+}
+$('tCancel').addEventListener('click', resetTeamForm);
+$('teamForm').addEventListener('submit', async (e) => {
+  e.preventDefault(); $('appMsg').textContent = '';
+  const name = $('tName').value.trim();
+  if (!name) { $('appMsg').textContent = 'Ad soyad yaz.'; $('tName').focus(); return; }
+  const data = {
+    name: name, role: $('tRole').value.trim() || null, bio: $('tBio').value.trim() || null,
+    link: $('tLink').value.trim() || null, sort_order: parseInt($('tSort').value, 10) || 0,
+    is_visible: $('tVisible').checked, photo: teamPhoto
+  };
+  $('tSave').disabled = true;
+  try {
+    const saved = await saveRow('ynk_team', teamEditId, data);
+    team = team.filter((x) => x.id !== saved.id).concat(saved);
+    resetTeamForm(); renderTeam();
+  } catch (err) { fail(err); } finally { $('tSave').disabled = false; }
+});
+function renderTeam() {
+  team.sort((a, b) => a.sort_order - b.sort_order || new Date(a.created_at) - new Date(b.created_at));
+  const box = $('teamList'); box.replaceChildren();
+  if (!team.length) { box.append(el('p', 'empty', 'Henüz ekip üyesi yok. Yukarıdaki formla ekle; sitede Ekip bölümü kendiliğinden görünür.')); return; }
+  team.forEach((m) => {
+    const row = el('div', 'li');
+    const main = el('div', 'main');
+    const av = el('div', 'avatar');
+    if (m.photo) { const img = el('img'); img.src = m.photo; img.alt = ''; av.append(img); } else av.textContent = (m.name || '?').charAt(0).toLocaleUpperCase('tr-TR');
+    const txt = el('div', 'txt');
+    const title = el('div', '', m.name); title.style.fontWeight = '600';
+    if (!m.is_visible) title.append(el('span', 'tag off', 'Gizli'));
+    txt.append(title, el('div', 'date', (m.role || 'Rol yok') + ' · sıra ' + m.sort_order));
+    main.append(av, txt);
+    const acts = el('div', 'acts');
+    acts.append(btn('ghost small', 'Düzenle', () => {
+      teamEditId = m.id; teamPhoto = m.photo || null;
+      $('tName').value = m.name || ''; $('tRole').value = m.role || ''; $('tBio').value = m.bio || '';
+      $('tLink').value = m.link || ''; $('tSort').value = m.sort_order; $('tVisible').checked = !!m.is_visible; $('tPhoto').value = '';
+      $('teamFormTitle').textContent = 'Ekip üyesini düzenle'; $('tCancel').hidden = false;
+      drawTeamPreview(); $('teamForm').scrollIntoView({ block: 'start' }); $('tName').focus();
+    }));
+    acts.append(deleteButton(async () => { await deleteRow('ynk_team', m.id); team = team.filter((x) => x.id !== m.id); if (teamEditId === m.id) resetTeamForm(); }, renderTeam));
+    row.append(main, acts); box.append(row);
+  });
+}
+
+/* ---------- İçerikler ---------- */
+function resetContentForm() {
+  contentEditId = null;
+  $('contentForm').reset(); $('cVisible').checked = true; $('cSort').value = '0'; $('cKind').value = 'video';
+  $('contentFormTitle').textContent = 'Yeni içerik'; $('cCancel').hidden = true;
+}
+$('cCancel').addEventListener('click', resetContentForm);
+$('contentForm').addEventListener('submit', async (e) => {
+  e.preventDefault(); $('appMsg').textContent = '';
+  const title = $('cTitle').value.trim(), url = $('cUrl').value.trim();
+  if (!title) { $('appMsg').textContent = 'Başlık yaz.'; $('cTitle').focus(); return; }
+  if (!/^https?:\/\//i.test(url)) { $('appMsg').textContent = 'Bağlantı https:// ile başlamalı.'; $('cUrl').focus(); return; }
+  const data = { title: title, url: url, kind: $('cKind').value, sort_order: parseInt($('cSort').value, 10) || 0, is_visible: $('cVisible').checked };
+  $('cSave').disabled = true;
+  try {
+    const saved = await saveRow('ynk_content', contentEditId, data);
+    content = content.filter((x) => x.id !== saved.id).concat(saved);
+    resetContentForm(); renderContent();
+  } catch (err) { fail(err); } finally { $('cSave').disabled = false; }
+});
+function renderContent() {
+  content.sort((a, b) => a.sort_order - b.sort_order || new Date(b.created_at) - new Date(a.created_at));
+  const box = $('contentList'); box.replaceChildren();
+  if (!content.length) { box.append(el('p', 'empty', 'Henüz içerik yok. Yukarıdaki formla ekle; sitede İçerikler bölümü kendiliğinden görünür.')); return; }
+  content.forEach((c) => {
+    const row = el('div', 'li');
+    const txt = el('div', 'txt');
+    const title = el('div', '', c.title); title.style.fontWeight = '600';
+    title.append(el('span', 'tag', KIND_LABEL[c.kind] || KIND_LABEL.diger));
+    if (!c.is_visible) title.append(el('span', 'tag off', 'Gizli'));
+    txt.append(title, el('div', 'date', c.url + ' · sıra ' + c.sort_order));
+    const acts = el('div', 'acts');
+    acts.append(btn('ghost small', 'Düzenle', () => {
+      contentEditId = c.id;
+      $('cTitle').value = c.title || ''; $('cUrl').value = c.url || ''; $('cKind').value = KIND_LABEL[c.kind] ? c.kind : 'diger';
+      $('cSort').value = c.sort_order; $('cVisible').checked = !!c.is_visible;
+      $('contentFormTitle').textContent = 'İçeriği düzenle'; $('cCancel').hidden = false;
+      $('contentForm').scrollIntoView({ block: 'start' }); $('cTitle').focus();
+    }));
+    acts.append(deleteButton(async () => { await deleteRow('ynk_content', c.id); content = content.filter((x) => x.id !== c.id); if (contentEditId === c.id) resetContentForm(); }, renderContent));
+    row.append(txt, acts); box.append(row);
+  });
+}
+
+/* ---------- Başlangıç ---------- */
+// Bir tablo okunamazsa (örneğin henüz kurulmadıysa) diğer sekmeler çalışmaya devam eder.
+async function load(label, fn) {
+  try { await fn(); } catch (err) {
+    if (err.message === 'unauthorized') throw err;
+    $('appMsg').textContent = ($('appMsg').textContent ? $('appMsg').textContent + ' ' : '') + label + ' yüklenemedi.';
+  }
+}
 async function start() {
   $('login').hidden = true; $('app').hidden = false;
   $('who').textContent = session.email; $('appMsg').textContent = '';
-  renderOwn();
+  renderOwn(); resetTeamForm(); resetContentForm();
+  const since = new Date(startOfToday() - 29 * DAY).toISOString();
   try {
-    const since = new Date(startOfToday() - 29 * DAY).toISOString();
-    const [v, s, totalRes] = await Promise.all([
-      fetchAll('ynk_page_views', 'select=page,referrer,created_at&created_at=gte.' + encodeURIComponent(since) + '&order=created_at.desc'),
-      fetchAll('ynk_subscribers', 'select=id,email,created_at&order=created_at.desc'),
-      api('/rest/v1/ynk_page_views?select=id&limit=1', { headers: { Prefer: 'count=exact' } })
+    await Promise.all([
+      load('Analitik', async () => {
+        views = await fetchAll('ynk_page_views', 'select=page,referrer,created_at&created_at=gte.' + encodeURIComponent(since) + '&order=created_at.desc');
+        const totalRes = await api('/rest/v1/ynk_page_views?select=id&limit=1', { headers: { Prefer: 'count=exact' } });
+        const cr = totalRes.headers.get('content-range');
+        $('nTotal').textContent = cr && cr.includes('/') && cr.split('/')[1] !== '*' ? cr.split('/')[1] : '–';
+        renderStats();
+      }),
+      load('Aboneler', async () => { subscribers = await fetchAll('ynk_subscribers', 'select=id,email,created_at&order=created_at.desc'); renderSubs(); }),
+      load('Başvurular', async () => { inquiries = await fetchAll('ynk_inquiries', 'select=id,name,org,email,kind,message,created_at&order=created_at.desc'); renderInq(); }),
+      load('Ekip', async () => { team = await fetchAll('ynk_team', 'select=id,name,role,bio,photo,link,sort_order,is_visible,created_at&order=sort_order.asc'); renderTeam(); }),
+      load('İçerikler', async () => { content = await fetchAll('ynk_content', 'select=id,title,url,kind,sort_order,is_visible,created_at&order=sort_order.asc'); renderContent(); })
     ]);
-    views = v; subscribers = s;
-    const cr = totalRes.headers.get('content-range');
-    $('nTotal').textContent = cr && cr.includes('/') && cr.split('/')[1] !== '*' ? cr.split('/')[1] : '–';
-    renderStats(); renderSubs();
-  } catch (err) {
-    if (err.message !== 'unauthorized') $('appMsg').textContent = 'Veriler yüklenemedi: ' + err.message;
-  }
+  } catch (err) { /* oturum düştü; giriş ekranı zaten gösterildi */ }
 }
 
 try { session = JSON.parse(sessionStorage.getItem('ynk_admin') || 'null'); } catch (e) { session = null; }
