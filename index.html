@@ -64,8 +64,8 @@ nav.top a:hover{text-decoration:underline;text-decoration-color:var(--signal);te
 nav.top .btn{padding:9px 16px;font-size:15px}
 
 /* Açılış */
-.hero{padding-top:clamp(44px,8vw,104px);padding-bottom:clamp(40px,6vw,80px)}
-.pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--ink);border-radius:999px;padding:7px 13px;background:var(--signal);margin-bottom:28px}
+.hero{padding-top:clamp(36px,6vw,80px);padding-bottom:clamp(40px,6vw,80px)}
+.pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--ink);border-radius:999px;padding:7px 13px;background:var(--signal);margin-top:36px}
 .dot{width:9px;height:9px;border-radius:50%;background:var(--ink);animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.25}}
 h1{font-family:var(--font-display);font-weight:800;font-size:clamp(40px,7.4vw,96px);line-height:.98;letter-spacing:-.04em;max-width:15ch;text-wrap:balance}
@@ -125,7 +125,8 @@ textarea{min-height:120px;resize:vertical}
 .msg.ok{color:var(--ok);font-weight:600}
 .msg.err{color:var(--err);font-weight:600}
 
-/* Bülten */
+/* Bülten (şimdilik sayfanın en üstünde) */
+.top-news{padding-top:clamp(18px,3vw,32px)}
 .news{background:var(--ink);color:var(--paper);border-radius:18px;padding:clamp(24px,4vw,44px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px clamp(24px,4vw,56px);align-items:center}
 .news h2{color:var(--paper)}
 .news p{color:#CFCAB8;margin-top:10px}
@@ -185,14 +186,35 @@ footer{padding:36px 0 44px}
 </header>
 
 <main>
+  <section class="top-news" id="bulten">
+    <div class="wrap">
+      <div class="news">
+        <div>
+          <h2>Yenilikleri ilk sen duy.</h2>
+          <p>Yeni bölümler, programlar ve duyurular için e-postanı bırak.</p>
+        </div>
+        <form id="signup" novalidate>
+          <label class="mono" for="email" style="display:block;margin-bottom:8px">E-posta adresin</label>
+          <div class="field">
+            <input type="email" id="email" placeholder="ad@ornek.com" autocomplete="email" inputmode="email" maxlength="254" required>
+            <button class="btn" type="submit" id="submit">Haber ver</button>
+          </div>
+          <label class="consent" for="consent"><input type="checkbox" id="consent"><span><a href="/kvkk">Aydınlatma Metni</a>'ni okudum; e-posta adresimin YNK.studio duyuruları için işlenmesine ve bu amaçla yurt dışındaki hizmet sağlayıcılara aktarılmasına açık rıza veriyorum.</span></label>
+          <div class="hp" aria-hidden="true"><label for="website">Bu alanı boş bırak</label><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
+          <p class="msg" id="note" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <div class="wrap hero">
-    <p class="pill mono"><span class="dot" aria-hidden="true"></span>0'dan 1'e · CNBC-e'de</p>
     <h1>Girişimciliği <mark>erişilebilir</mark> yapıyoruz.</h1>
     <p class="lede">Yeni Nesil Kafası bir medya ve topluluk stüdyosu. Girişimciliği ekrana, sahneye ve sınıfa taşıyor; gençleri ve kurumları bu dünyayla buluşturuyoruz.</p>
     <div class="cta">
       <a class="btn" href="#is-birligi">İş birliği yapalım</a>
       <a class="btn ghost" href="https://www.youtube.com/@YeniNesilKafas%C4%B1" target="_blank" rel="noopener">İçerikleri izle ↗</a>
     </div>
+    <p class="pill mono"><span class="dot" aria-hidden="true"></span>0'dan 1'e · CNBC-e'de</p>
   </div>
 
   <section class="block" id="ne-yapiyoruz">
@@ -282,26 +304,6 @@ footer{padding:36px 0 44px}
     </div>
   </section>
 
-  <section class="block" id="bulten">
-    <div class="wrap">
-      <div class="news">
-        <div>
-          <h2>Yenilikleri ilk sen duy.</h2>
-          <p>Yeni bölümler, programlar ve duyurular için e-postanı bırak.</p>
-        </div>
-        <form id="signup" novalidate>
-          <label class="mono" for="email" style="display:block;margin-bottom:8px">E-posta adresin</label>
-          <div class="field">
-            <input type="email" id="email" placeholder="ad@ornek.com" autocomplete="email" inputmode="email" maxlength="254" required>
-            <button class="btn" type="submit" id="submit">Haber ver</button>
-          </div>
-          <label class="consent" for="consent"><input type="checkbox" id="consent"><span><a href="/kvkk">Aydınlatma Metni</a>'ni okudum; e-posta adresimin YNK.studio duyuruları için işlenmesine ve bu amaçla yurt dışındaki hizmet sağlayıcılara aktarılmasına açık rıza veriyorum.</span></label>
-          <div class="hp" aria-hidden="true"><label for="website">Bu alanı boş bırak</label><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
-          <p class="msg" id="note" role="status" aria-live="polite"></p>
-        </form>
-      </div>
-    </div>
-  </section>
 </main>
 
 <footer>
