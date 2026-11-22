@@ -68,6 +68,9 @@ nav.top .btn{padding:9px 16px;font-size:15px}
 .pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--ink);border-radius:999px;padding:7px 13px;background:var(--signal);margin-top:36px}
 .dot{width:9px;height:9px;border-radius:50%;background:var(--ink);animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.25}}
+a.pill{text-decoration:none;transition:background .15s,color .15s}
+a.pill:hover{background:var(--ink);color:var(--signal)}
+a.pill:hover .dot{background:var(--signal)}
 h1{font-family:var(--font-display);font-weight:800;font-size:clamp(40px,7.4vw,96px);line-height:.98;letter-spacing:-.04em;max-width:15ch;text-wrap:balance}
 h1 mark{background:var(--signal);color:inherit;padding:0 .12em;border-radius:.1em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .lede{font-size:clamp(18px,2vw,22px);line-height:1.45;max-width:52ch;margin-top:28px}
@@ -213,7 +216,7 @@ footer{padding:36px 0 44px}
       <a class="btn" href="#is-birligi">İş birliği yapalım</a>
       <a class="btn ghost" href="https://www.youtube.com/@YeniNesilKafas%C4%B1" target="_blank" rel="noopener">İçerikleri izle ↗</a>
     </div>
-    <p class="pill mono"><span class="dot" aria-hidden="true"></span>0'dan 1'e · CNBC-e'de</p>
+    <a class="pill mono" href="https://www.youtube.com/@YeniNesilKafas%C4%B1/playlists" target="_blank" rel="noopener"><span class="dot" aria-hidden="true"></span>0'dan 1'e · CNBC-e'de ↗</a>
   </div>
 
   <section class="block" id="ne-yapiyoruz">
