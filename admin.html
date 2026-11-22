@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>YNK.studio Yönetim</title>
+<link rel="icon" type="image/jpeg" href="/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ECEEE8;
+  --ink:#11151A;
+  --muted:#5B636B;
+  --line:#C9CEC6;
+  --signal:#FF4A1C;
+  --signal-ink:#B02C08;
+  --card:#F7F8F4;
+  --font-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+.wrap{max-width:980px;margin:0 auto;padding:28px clamp(16px,4vw,40px) 64px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--ink)}
+.brand img{display:block;width:44px;height:44px;border-radius:10px}
+.who{font-size:14px;color:var(--muted);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);padding:10px 16px;font-weight:600}
+button.ghost{background:transparent;color:var(--ink)}
+button.small{padding:6px 12px;font-size:13px}
+button.danger{border-color:var(--signal-ink);background:var(--signal-ink)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+h1{font-family:var(--font-display);font-weight:800;font-size:clamp(30px,5vw,44px);letter-spacing:-.03em;line-height:1.05}
+.label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+.login{max-width:380px;margin:12vh auto 0;background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:14px}
+.login label{display:block;margin-bottom:6px}
+input[type=email],input[type=password]{width:100%;font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:12px 14px}
+.msg{font-size:14px;color:var(--signal-ink);font-weight:600;min-height:1.4em}
+
+.tabs{display:flex;gap:8px;margin:20px 0 24px;flex-wrap:wrap}
+.tabs button[aria-selected=false]{background:transparent;color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.tile,.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tile .n{font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile.accent .n{color:var(--signal-ink)}
+.range{display:flex;gap:8px;margin-bottom:12px}
+.chart{display:flex;align-items:flex-end;gap:3px;height:140px}
+.chart .col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.chart .bar{width:100%;background:var(--ink);border-radius:3px 3px 0 0}
+.axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 20px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:15px}
+.row:last-child{border-bottom:0}
+.row .k{overflow-wrap:anywhere;min-width:0}
+.row .v{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.empty{font-size:14px;color:var(--muted)}
+.fine{font-size:13px;color:var(--muted);margin-top:8px}
+.fine button{all:unset;cursor:pointer;text-decoration:underline;color:var(--ink)}
+.bar-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.sub{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.sub:last-child{border-bottom:0}
+.sub .mail{overflow-wrap:anywhere;min-width:0}
+.sub .date{font-size:13px;color:var(--muted)}
+.sub .acts{display:flex;gap:6px;flex:none}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <form class="login" id="login" hidden>
+    <a class="brand" href="/"><img src="/logo.jpg" alt="YNK logosu" width="44" height="44">YNK.studio Yönetim</a>
+    <div>
+      <label class="label" for="email">E-posta</label>
+      <input type="email" id="email" autocomplete="username" required>
+    </div>
+    <div>
+      <label class="label" for="password">Şifre</label>
+      <input type="password" id="password" autocomplete="current-password" required>
+    </div>
+    <button type="submit" id="loginBtn">Giriş yap</button>
+    <p class="msg" id="loginMsg" role="status" aria-live="polite"></p>
+  </form>
+
+  <div id="app" hidden>
+    <div class="top">
+      <a class="brand" href="/"><img src="/logo.jpg" alt="YNK logosu" width="44" height="44">YNK.studio</a>
+      <div class="who"><span id="who"></span><button class="ghost small" id="logout" type="button">Çıkış</button></div>
+    </div>
+    <h1>Yönetim</h1>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tabStats" aria-selected="true">Analitik</button>
+      <button type="button" role="tab" id="tabSubs" aria-selected="false">Aboneler</button>
+    </div>
+    <p class="msg" id="appMsg" role="status" aria-live="polite"></p>
+
+    <section id="stats">
+      <div class="tiles">
+        <div class="tile accent"><div class="n" id="nToday">–</div><div class="label">Bugün</div></div>
+        <div class="tile"><div class="n" id="n7">–</div><div class="label">Son 7 gün</div></div>
+        <div class="tile"><div class="n" id="n30">–</div><div class="label">Son 30 gün</div></div>
+        <div class="tile"><div class="n" id="nTotal">–</div><div class="label">Toplam</div></div>
+      </div>
+      <div class="range">
+        <button type="button" class="small" id="r7">7 gün</button>
+        <button type="button" class="small" id="r30">30 gün</button>
+      </div>
+      <div class="panel">
+        <p class="label" style="margin-bottom:14px">Günlük sayfa görüntüleme</p>
+        <div id="chartBox"></div>
+      </div>
+      <div class="two">
+        <div class="panel"><p class="label" style="margin-bottom:8px">Yönlendiren siteler</p><div id="refs"></div></div>
+        <div class="panel"><p class="label" style="margin-bottom:8px">Sayfalar</p><div id="pages"></div></div>
+      </div>
+      <p class="fine">Her tarayıcı oturumunda bir sayfa bir kez sayılır. <span id="ownState"></span> <button type="button" id="ownToggle"></button></p>
+    </section>
+
+    <section id="subs" hidden>
+      <div class="bar-top">
+        <p><strong id="subCount">0</strong> abone</p>
+        <button type="button" class="ghost small" id="csv">CSV indir</button>
+      </div>
+      <div class="panel" id="subList"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://nrltvzxnqgqmxxvlaacq.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybHR2enhucWdxbXh4dmxhYWNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODE5MzcsImV4cCI6MjA4NzU1NzkzN30.mGGSYW_CfvMNotjxC5_vwf6NevvVpjwsudf11NH2CAY';
+const DAY = 24 * 60 * 60 * 1000;
+const $ = (id) => document.getElementById(id);
+
+let session = null;   // { token, email }
+let views = [];
+let subscribers = [];
+let range = 30;
+
+function store(key, value) { try { value === null ? sessionStorage.removeItem(key) : sessionStorage.setItem(key, value); } catch (e) {} }
+function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+
+function showLogin(message) {
+  session = null; store('ynk_admin', null);
+  $('app').hidden = true; $('login').hidden = false;
+  $('loginMsg').textContent = message || '';
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(SB_URL + path, {
+    ...opts,
+    headers: { apikey: SB_KEY, Authorization: 'Bearer ' + session.token, 'Content-Type': 'application/json', ...(opts.headers || {}) }
+  });
+  if (res.status === 401) { showLogin('Oturum süresi doldu, tekrar giriş yap.'); throw new Error('unauthorized'); }
+  return res;
+}
+
+async function fetchAll(table, query) {
+  const all = [];
+  for (let page = 0; page < 20; page++) {
+    const res = await api(`/rest/v1/${table}?${query}&limit=1000&offset=${page * 1000}`);
+    if (!res.ok) throw new Error(table + ' okunamadı (' + res.status + ')');
+    const rows = await res.json();
+    all.push(...rows);
+    if (rows.length < 1000) break;
+  }
+  return all;
+}
+
+$('login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('loginBtn').disabled = true; $('loginMsg').textContent = '';
+  try {
+    const res = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: $('email').value.trim(), password: $('password').value })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.access_token) throw new Error('E-posta ya da şifre hatalı.');
+    session = { token: data.access_token, email: (data.user && data.user.email) || $('email').value.trim() };
+    store('ynk_admin', JSON.stringify(session));
+    try { if (localStorage.getItem('ynk_track_own') !== '1') localStorage.setItem('ynk_no_track', '1'); } catch (e2) {}
+    $('password').value = '';
+    start();
+  } catch (err) {
+    $('loginMsg').textContent = err.message === 'Failed to fetch' ? 'Sunucuya ulaşılamadı, tekrar dene.' : err.message;
+  } finally {
+    $('loginBtn').disabled = false;
+  }
+});
+
+$('logout').addEventListener('click', () => showLogin(''));
+
+function selectTab(name) {
+  $('tabStats').setAttribute('aria-selected', String(name === 'stats'));
+  $('tabSubs').setAttribute('aria-selected', String(name === 'subs'));
+  $('stats').hidden = name !== 'stats';
+  $('subs').hidden = name !== 'subs';
+}
+$('tabStats').addEventListener('click', () => selectTab('stats'));
+$('tabSubs').addEventListener('click', () => selectTab('subs'));
+
+function startOfToday() { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
+function dayKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function refHost(ref) {
+  if (!ref) return null;
+  try { const h = new URL(ref).hostname.replace(/^www\./, ''); return h === location.hostname.replace(/^www\./, '') ? null : h; } catch (e) { return null; }
+}
+
+function renderList(box, entries) {
+  box.replaceChildren();
+  if (!entries.length) { box.append(el('p', 'empty', 'Henüz veri yok.')); return; }
+  entries.forEach(([k, n]) => { const r = el('div', 'row'); r.append(el('span', 'k', k), el('span', 'v', String(n))); box.append(r); });
+}
+
+function renderStats() {
+  const t0 = startOfToday();
+  const inLast = (days) => views.filter((v) => new Date(v.created_at).getTime() >= t0 - (days - 1) * DAY);
+  $('nToday').textContent = inLast(1).length;
+  $('n7').textContent = inLast(7).length;
+  $('n30').textContent = inLast(30).length;
+  $('r7').className = 'small' + (range === 7 ? '' : ' ghost');
+  $('r30').className = 'small' + (range === 30 ? '' : ' ghost');
+
+  const rows = inLast(range);
+  const perDay = {};
+  rows.forEach((v) => { const k = dayKey(new Date(v.created_at)); perDay[k] = (perDay[k] || 0) + 1; });
+  const series = Array.from({ length: range }, (_, i) => {
+    const d = new Date(t0 - (range - 1 - i) * DAY);
+    return { label: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }), n: perDay[dayKey(d)] || 0 };
+  });
+  const max = Math.max(1, ...series.map((s) => s.n));
+  const box = $('chartBox'); box.replaceChildren();
+  if (!rows.length) {
+    box.append(el('p', 'empty', 'Bu aralıkta kayıtlı ziyaret yok.'));
+  } else {
+    const chart = el('div', 'chart'); chart.setAttribute('role', 'img'); chart.setAttribute('aria-label', 'Günlük sayfa görüntüleme grafiği');
+    series.forEach((s) => {
+      const col = el('div', 'col'); col.title = s.label + ': ' + s.n;
+      const bar = el('div', 'bar'); bar.style.height = (s.n / max) * 100 + '%'; if (s.n) bar.style.minHeight = '2px';
+      col.append(bar); chart.append(col);
+    });
+    const axis = el('div', 'axis'); axis.append(el('span', '', series[0].label), el('span', '', 'en yüksek: ' + max), el('span', '', series[series.length - 1].label));
+    box.append(chart, axis);
+  }
+
+  const refs = {}, pages = {};
+  rows.forEach((v) => {
+    const r = refHost(v.referrer) || 'Doğrudan'; refs[r] = (refs[r] || 0) + 1;
+    const p = v.page || '/'; pages[p] = (pages[p] || 0) + 1;
+  });
+  const top = (o) => Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  renderList($('refs'), top(refs));
+  renderList($('pages'), top(pages));
+}
+$('r7').addEventListener('click', () => { range = 7; renderStats(); });
+$('r30').addEventListener('click', () => { range = 30; renderStats(); });
+
+function renderOwn() {
+  let off = false; try { off = localStorage.getItem('ynk_no_track') === '1'; } catch (e) {}
+  $('ownState').textContent = off ? 'Bu cihazdaki kendi ziyaretlerin sayılmıyor.' : 'Bu cihazdaki kendi ziyaretlerin de sayılıyor.';
+  $('ownToggle').textContent = off ? 'Benimkileri de say' : 'Benimkileri sayma';
+}
+$('ownToggle').addEventListener('click', () => {
+  try {
+    if (localStorage.getItem('ynk_no_track') === '1') { localStorage.removeItem('ynk_no_track'); localStorage.setItem('ynk_track_own', '1'); }
+    else { localStorage.setItem('ynk_no_track', '1'); localStorage.removeItem('ynk_track_own'); }
+  } catch (e) {}
+  renderOwn();
+});
+
+function renderSubs() {
+  $('subCount').textContent = subscribers.length;
+  const box = $('subList'); box.replaceChildren();
+  if (!subscribers.length) { box.append(el('p', 'empty', 'Henüz abone yok.')); return; }
+  subscribers.forEach((s) => {
+    const row = el('div', 'sub');
+    const left = el('div', 'mail'); left.append(el('div', '', s.email), el('div', 'date', new Date(s.created_at).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' })));
+    const acts = el('div', 'acts');
+    const del = el('button', 'ghost small', 'Sil'); del.type = 'button';
+    del.addEventListener('click', () => {
+      const yes = el('button', 'danger small', 'Evet, sil'); yes.type = 'button';
+      const no = el('button', 'ghost small', 'Vazgeç'); no.type = 'button';
+      no.addEventListener('click', renderSubs);
+      yes.addEventListener('click', async () => {
+        yes.disabled = true;
+        try {
+          const res = await api('/rest/v1/ynk_subscribers?id=eq.' + encodeURIComponent(s.id), { method: 'DELETE' });
+          if (!res.ok) throw new Error('Silinemedi (' + res.status + ').');
+          subscribers = subscribers.filter((x) => x.id !== s.id); renderSubs();
+        } catch (err) { if (err.message !== 'unauthorized') { $('appMsg').textContent = err.message; renderSubs(); } }
+      });
+      acts.replaceChildren(yes, no);
+    });
+    acts.append(del); row.append(left, acts); box.append(row);
+  });
+}
+
+$('csv').addEventListener('click', () => {
+  const lines = ['email,created_at'].concat(subscribers.map((s) => '"' + String(s.email).replace(/"/g, '""') + '",' + s.created_at));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'ynk-aboneler-' + dayKey(new Date()) + '.csv';
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+
+async function start() {
+  $('login').hidden = true; $('app').hidden = false;
+  $('who').textContent = session.email; $('appMsg').textContent = '';
+  renderOwn();
+  try {
+    const since = new Date(startOfToday() - 29 * DAY).toISOString();
+    const [v, s, totalRes] = await Promise.all([
+      fetchAll('ynk_page_views', 'select=page,referrer,created_at&created_at=gte.' + encodeURIComponent(since) + '&order=created_at.desc'),
+      fetchAll('ynk_subscribers', 'select=id,email,created_at&order=created_at.desc'),
+      api('/rest/v1/ynk_page_views?select=id&limit=1', { headers: { Prefer: 'count=exact' } })
+    ]);
+    views = v; subscribers = s;
+    const cr = totalRes.headers.get('content-range');
+    $('nTotal').textContent = cr && cr.includes('/') && cr.split('/')[1] !== '*' ? cr.split('/')[1] : '–';
+    renderStats(); renderSubs();
+  } catch (err) {
+    if (err.message !== 'unauthorized') $('appMsg').textContent = 'Veriler yüklenemedi: ' + err.message;
+  }
+}
+
+try { session = JSON.parse(sessionStorage.getItem('ynk_admin') || 'null'); } catch (e) { session = null; }
+if (session && session.token) start(); else showLogin('');
+</script>
+</body>
+</html>
