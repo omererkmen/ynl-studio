@@ -39,6 +39,8 @@ h1 mark{background:var(--signal);color:inherit;padding:0 .12em;border-radius:.1e
 form{background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:16px;margin-top:28px}
 label.f{display:block}
 label.f > span{display:block;margin-bottom:6px}
+label.f .req,.req-note .req{color:var(--err);font-weight:600}
+.req-note{font-size:13px;color:var(--muted)}
 label.f small{display:block;font-size:13px;color:var(--muted);margin-top:5px}
 input[type=text],input[type=email],input[type=url],textarea{width:100%;font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:12px 14px}
 textarea{min-height:96px;resize:vertical}
@@ -79,7 +81,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
   </div>
 
   <form id="join" novalidate hidden>
-    <label class="f" for="name"><span class="mono">Ad soyad</span><input type="text" id="name" autocomplete="name" maxlength="120" required></label>
+    <label class="f" for="name"><span class="mono">Ad soyad <b class="req" aria-hidden="true">*</b></span><input type="text" id="name" aria-required="true" autocomplete="name" maxlength="120" required></label>
     <label class="f" for="role"><span class="mono">Rol</span><input type="text" id="role" maxlength="120" placeholder="Örn. Yapımcı, Editör, Topluluk"></label>
     <label class="f" for="bio"><span class="mono">Kısa tanıtım</span><textarea id="bio" maxlength="400" placeholder="Bir iki cümleyle kendini anlat."></textarea></label>
     <label class="f" for="link"><span class="mono">Bağlantı</span><input type="url" id="link" maxlength="300" placeholder="https://linkedin.com/in/..."><small>Adına tıklayınca açılacak sayfa. Boş bırakabilirsin.</small></label>
@@ -95,6 +97,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
     </div>
     <label class="consent" for="consent"><input type="checkbox" id="consent"><span><a href="/kvkk" target="_blank" rel="noopener">Aydınlatma Metni</a>'ni okudum; bu bilgilerimin ve fotoğrafımın ynk.studio sitesinde yayınlanmak üzere işlenmesine ve bu amaçla yurt dışındaki hizmet sağlayıcılara aktarılmasına açık rıza veriyorum.</span></label>
     <div class="hp" aria-hidden="true"><label for="web">Bu alanı boş bırak</label><input type="text" id="web" tabindex="-1" autocomplete="off"></div>
+    <p class="req-note"><b class="req" aria-hidden="true">*</b> işaretli alan zorunludur; diğerlerini boş bırakabilirsin. Açık rıza kutusunu işaretlemen de gerekir.</p>
     <div><button class="btn" type="submit" id="send">Gönder</button></div>
     <p class="msg" id="note" role="status" aria-live="polite"></p>
   </form>

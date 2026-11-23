@@ -118,6 +118,8 @@ h2{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,4vw,46px
 form.panel{background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px}
 label.f{display:block}
 label.f > span{display:block;margin-bottom:6px;color:var(--ink)}
+.req{color:var(--err);font-weight:600}
+.req-note{font-size:13px;color:var(--muted)}
 input[type=text],input[type=email],select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:12px 14px}
 textarea{min-height:120px;resize:vertical}
 .two-f{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
@@ -282,10 +284,10 @@ footer{padding:36px 0 44px}
 
           <form class="panel" id="inquiry" novalidate>
             <div class="two-f">
-              <label class="f" for="iName"><span class="mono">Ad soyad</span><input type="text" id="iName" autocomplete="name" maxlength="120" required></label>
+              <label class="f" for="iName"><span class="mono">Ad soyad <b class="req" aria-hidden="true">*</b></span><input type="text" id="iName" aria-required="true" autocomplete="name" maxlength="120" required></label>
               <label class="f" for="iOrg"><span class="mono">Kurum</span><input type="text" id="iOrg" autocomplete="organization" maxlength="160"></label>
             </div>
-            <label class="f" for="iEmail"><span class="mono">E-posta</span><input type="email" id="iEmail" autocomplete="email" inputmode="email" maxlength="254" required></label>
+            <label class="f" for="iEmail"><span class="mono">E-posta <b class="req" aria-hidden="true">*</b></span><input type="email" id="iEmail" aria-required="true" autocomplete="email" inputmode="email" maxlength="254" required></label>
             <label class="f" for="iKind"><span class="mono">Konu</span>
               <select id="iKind">
                 <option>Sponsorlu içerik</option>
@@ -298,6 +300,7 @@ footer{padding:36px 0 44px}
             <label class="f" for="iMsg"><span class="mono">Mesajın</span><textarea id="iMsg" maxlength="4000" placeholder="Ne yapmak istediğini birkaç cümleyle anlat."></textarea></label>
             <label class="consent" for="iConsent"><input type="checkbox" id="iConsent"><span><a href="/kvkk">Aydınlatma Metni</a>'ni okudum; bilgilerimin başvurumun değerlendirilmesi için işlenmesine ve bu amaçla yurt dışındaki hizmet sağlayıcılara aktarılmasına açık rıza veriyorum.</span></label>
             <div class="hp" aria-hidden="true"><label for="iWeb">Bu alanı boş bırak</label><input type="text" id="iWeb" tabindex="-1" autocomplete="off"></div>
+            <p class="req-note"><b class="req" aria-hidden="true">*</b> işaretli alanlar zorunludur. Açık rıza kutusunu işaretlemen de gerekir.</p>
             <div><button class="btn" type="submit" id="iBtn">Gönder</button></div>
             <p class="msg" id="iNote" role="status" aria-live="polite"></p>
           </form>
