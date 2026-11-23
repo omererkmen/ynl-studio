@@ -85,7 +85,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
     <label class="f" for="role"><span class="mono">Rol</span><input type="text" id="role" maxlength="120" placeholder="Örn. Yapımcı, Editör, Topluluk"></label>
     <label class="f" for="bio"><span class="mono">Kısa tanıtım</span><textarea id="bio" maxlength="400" placeholder="Bir iki cümleyle kendini anlat."></textarea></label>
     <label class="f" for="link"><span class="mono">Bağlantı</span><input type="url" id="link" maxlength="300" placeholder="https://linkedin.com/in/..."><small>Adına tıklayınca açılacak sayfa. Boş bırakabilirsin.</small></label>
-    <label class="f" for="email"><span class="mono">E-posta</span><input type="email" id="email" autocomplete="email" inputmode="email" maxlength="254"><small>Sitede görünmez; yalnızca sana ulaşmak için.</small></label>
+    <label class="f" for="email"><span class="mono">E-posta <b class="req" aria-hidden="true">*</b></span><input type="email" id="email" autocomplete="email" inputmode="email" maxlength="254" required aria-required="true"><small>Sitede görünmez; yalnızca sana ulaşmak için.</small></label>
     <div>
       <span class="mono" style="display:block;margin-bottom:8px">Fotoğraf</span>
       <div class="photo-row">
@@ -97,7 +97,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
     </div>
     <label class="consent" for="consent"><input type="checkbox" id="consent"><span><a href="/kvkk" target="_blank" rel="noopener">Aydınlatma Metni</a>'ni okudum; bu bilgilerimin ve fotoğrafımın ynk.studio sitesinde yayınlanmak üzere işlenmesine ve bu amaçla yurt dışındaki hizmet sağlayıcılara aktarılmasına açık rıza veriyorum.</span></label>
     <div class="hp" aria-hidden="true"><label for="web">Bu alanı boş bırak</label><input type="text" id="web" tabindex="-1" autocomplete="off"></div>
-    <p class="req-note"><b class="req" aria-hidden="true">*</b> işaretli alan zorunludur; diğerlerini boş bırakabilirsin. Açık rıza kutusunu işaretlemen de gerekir.</p>
+    <p class="req-note"><b class="req" aria-hidden="true">*</b> işaretli alanlar zorunludur; diğerlerini boş bırakabilirsin. Açık rıza kutusunu işaretlemen de gerekir.</p>
     <div><button class="btn" type="submit" id="send">Gönder</button></div>
     <p class="msg" id="note" role="status" aria-live="polite"></p>
   </form>
@@ -173,13 +173,13 @@ $('join').addEventListener('submit', async (e) => {
   const name = $('name').value.trim(), link = $('link').value.trim(), mail = $('email').value.trim().toLowerCase();
   if (!name) { say('Adını ve soyadını yaz.', true); $('name').focus(); return; }
   if (link && !/^https?:\/\//i.test(link)) { say('Bağlantı https:// ile başlamalı.', true); $('link').focus(); return; }
-  if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) { say('Geçerli bir e-posta adresi yaz ya da alanı boş bırak.', true); $('email').focus(); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) { say('Geçerli bir e-posta adresi yaz, örneğin ad@ornek.com.', true); $('email').focus(); return; }
   if (!$('consent').checked) { say('Devam etmek için açık rıza kutusunu işaretle.', true); return; }
   $('send').disabled = true; $('send').textContent = 'Gönderiliyor';
   try {
     const res = await fetch(SB_URL + '/rest/v1/ynk_team_requests', {
       method: 'POST', headers: SB_WRITE,
-      body: JSON.stringify({ name: name, role: $('role').value.trim() || null, bio: $('bio').value.trim() || null, link: link || null, email: mail || null, photo: photo, invite: invite })
+      body: JSON.stringify({ name: name, role: $('role').value.trim() || null, bio: $('bio').value.trim() || null, link: link || null, email: mail, photo: photo, invite: invite })
     });
     if (res.status === 201) { $('join').hidden = true; $('done').hidden = false; $('done').scrollIntoView({ block: 'center' }); return; }
     if (res.status === 401 || res.status === 403) say('Davet bağlantın geçersiz ya da süresi dolmuş. Davet eden kişiden yeni bağlantı iste.', true);
