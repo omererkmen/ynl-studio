@@ -136,6 +136,10 @@ textarea{min-height:84px;resize:vertical}
         <button type="button" class="small" id="r7">7 gün</button>
         <button type="button" class="small" id="r30">30 gün</button>
       </div>
+      <div class="two" style="margin-top:0">
+        <div class="tile"><div class="n" id="convSub">–</div><div class="label">Bülten dönüşümü</div><p class="fine" id="convSubNote"></p></div>
+        <div class="tile"><div class="n" id="convInq">–</div><div class="label">Başvuru dönüşümü</div><p class="fine" id="convInqNote"></p></div>
+      </div>
       <div class="panel">
         <p class="label" style="margin-bottom:14px">Günlük sayfa görüntüleme</p>
         <div id="chartBox"></div>
@@ -379,6 +383,26 @@ function renderStats() {
   clickRows.forEach((v) => { const k = v.page.slice(6) || '?'; clicked[k] = (clicked[k] || 0) + 1; });
   renderList($('clicks'), top(clicked, 25));
   $('clickTotal').textContent = clickRows.length ? 'son ' + range + ' günde ' + clickRows.length + ' tıklama' : '';
+
+  // Dönüşüm: seçili aralıkta ana sayfa ziyaretlerinin kaçı formu tamamladı.
+  const from = t0 - (range - 1) * DAY;
+  const visits = rows.filter((v) => String(v.page || '/').split('?')[0] === '/').length;
+  const firstClick = clicks.length ? Math.min(...clicks.map((c) => new Date(c.created_at).getTime())) : null;
+  const conv = (numId, noteId, list, clickName, unit) => {
+    const done = list.filter((x) => new Date(x.created_at).getTime() >= from).length;
+    $(numId).textContent = visits ? '%' + (done / visits * 100).toLocaleString('tr-TR', { maximumFractionDigits: 1 }) : '–';
+    let note = done + ' ' + unit + ' / ' + visits + ' ziyaret (son ' + range + ' gün)';
+    // Düğmeye basanların kaçı tamamladı: tıklama kaydı yalnızca takibin başladığı andan beri var.
+    if (firstClick !== null) {
+      const since = Math.max(from, firstClick);
+      const tries = clicks.filter((c) => c.page === 'click:' + clickName && new Date(c.created_at).getTime() >= since).length;
+      const doneSince = list.filter((x) => new Date(x.created_at).getTime() >= since).length;
+      if (tries) note += '. Düğmeye ' + tries + ' kez basıldı, ' + doneSince + ' ' + unit + ' tamamlandı.';
+    }
+    $(noteId).textContent = note;
+  };
+  conv('convSub', 'convSubNote', subscribers, 'Bülten: Haber ver', 'kayıt');
+  conv('convInq', 'convInqNote', inquiries, 'Başvuru: Gönder', 'başvuru');
 }
 $('r7').addEventListener('click', () => { range = 7; renderStats(); });
 $('r30').addEventListener('click', () => { range = 30; renderStats(); });
@@ -593,6 +617,7 @@ async function start() {
       load('Ekip', async () => { team = await fetchAll('ynk_team', 'select=id,name,role,bio,photo,link,sort_order,is_visible,created_at&order=sort_order.asc'); renderTeam(); }),
       load('İçerikler', async () => { content = await fetchAll('ynk_content', 'select=id,title,url,kind,sort_order,is_visible,created_at&order=sort_order.asc'); renderContent(); })
     ]);
+    renderStats(); // dönüşüm oranları abone ve başvuru listeleri geldikten sonra hesaplanır
   } catch (err) { /* oturum düştü; giriş ekranı zaten gösterildi */ }
 }
 
