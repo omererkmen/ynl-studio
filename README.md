@@ -8,3 +8,5 @@ Yeni Nesil Kafası web sitesi. Düz HTML; derleme adımı yok.
 - `vercel.json` temiz adresler ve logo yönlendirmesi
 
 Veriler wapimusic Supabase projesindeki `ynk_` ön ekli tablolarda durur.
+
+Tıklamalar `ynk_page_views` tablosuna `click:<etiket>` adıyla yazılır; admin bunları sayfa görüntülemelerinden ayırır.

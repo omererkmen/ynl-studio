@@ -144,6 +144,10 @@ textarea{min-height:84px;resize:vertical}
         <div class="panel"><p class="label" style="margin-bottom:8px">Yönlendiren siteler</p><div id="refs"></div></div>
         <div class="panel"><p class="label" style="margin-bottom:8px">Sayfalar ve kaynak etiketleri</p><div id="pages"></div></div>
       </div>
+      <div class="panel" style="margin-bottom:20px">
+        <div class="bar-top" style="margin-bottom:8px"><p class="label">Tıklananlar</p><p class="date" id="clickTotal"></p></div>
+        <div id="clicks"></div>
+      </div>
       <p class="fine">Her tarayıcı oturumunda bir sayfa bir kez sayılır. <span id="ownState"></span> <button type="button" id="ownToggle"></button></p>
     </section>
 
@@ -224,7 +228,7 @@ const $ = (id) => document.getElementById(id);
 const KIND_LABEL = { bolum: "0'dan 1'e", video: 'Video', yazi: 'Yazı', diger: 'Diğer' };
 
 let session = null;   // { token, email }
-let views = [], subscribers = [], inquiries = [], team = [], content = [];
+let views = [], clicks = [], subscribers = [], inquiries = [], team = [], content = [];
 let range = 30;
 let teamEditId = null, teamPhoto = null, contentEditId = null;
 
@@ -369,6 +373,12 @@ function renderStats() {
   const top = (o, n) => Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, n);
   renderList($('refs'), top(refs, 8));
   renderList($('pages'), top(pages, 12));
+
+  const clicked = {};
+  const clickRows = clicks.filter((v) => new Date(v.created_at).getTime() >= t0 - (range - 1) * DAY);
+  clickRows.forEach((v) => { const k = v.page.slice(6) || '?'; clicked[k] = (clicked[k] || 0) + 1; });
+  renderList($('clicks'), top(clicked, 25));
+  $('clickTotal').textContent = clickRows.length ? 'son ' + range + ' günde ' + clickRows.length + ' tıklama' : '';
 }
 $('r7').addEventListener('click', () => { range = 7; renderStats(); });
 $('r30').addEventListener('click', () => { range = 30; renderStats(); });
@@ -569,8 +579,11 @@ async function start() {
   try {
     await Promise.all([
       load('Analitik', async () => {
-        views = await fetchAll('ynk_page_views', 'select=page,referrer,created_at&created_at=gte.' + encodeURIComponent(since) + '&order=created_at.desc');
-        const totalRes = await api('/rest/v1/ynk_page_views?select=id&limit=1', { headers: { Prefer: 'count=exact' } });
+        const rows = await fetchAll('ynk_page_views', 'select=page,referrer,created_at&created_at=gte.' + encodeURIComponent(since) + '&order=created_at.desc');
+        // "click:" ile başlayan satırlar tıklama kaydıdır; sayfa görüntülemelerinden ayrılır.
+        clicks = rows.filter((r) => String(r.page).startsWith('click:'));
+        views = rows.filter((r) => !String(r.page).startsWith('click:'));
+        const totalRes = await api('/rest/v1/ynk_page_views?select=id&limit=1&page=not.like.' + encodeURIComponent('click:*'), { headers: { Prefer: 'count=exact' } });
         const cr = totalRes.headers.get('content-range');
         $('nTotal').textContent = cr && cr.includes('/') && cr.split('/')[1] !== '*' ? cr.split('/')[1] : '–';
         renderStats();

@@ -360,6 +360,35 @@ const KIND_LABEL = { bolum: "0'dan 1'e", video: 'Video', yazi: 'Yazı', diger: '
   }).catch(function () {});
 })();
 
+// Tıklama kaydı: aynı tabloya "click:<etiket>" olarak yazılır; admin'de "Tıklananlar" listesinde görünür.
+function clickLabel(t) {
+  if (t.dataset.click) return t.dataset.click;
+  const text = (t.textContent || '').replace('↗', '').replace(/\s+/g, ' ').trim();
+  if (t.id === 'submit') return 'Bülten: Haber ver';
+  if (t.id === 'iBtn') return 'Başvuru: Gönder';
+  if (t.tagName !== 'A') return null;
+  if (t.classList.contains('brand')) return 'Logo';
+  if (t.classList.contains('pill')) return "Rozet: 0'dan 1'e";
+  if (t.classList.contains('item')) { const n = t.querySelector('.t'); return 'İçerik: ' + (n ? n.textContent : text); }
+  if (t.closest('.person')) return 'Ekip: ' + text;
+  if (t.closest('nav.top')) return 'Menü: ' + text;
+  if (t.closest('.cta')) return 'Açılış: ' + text;
+  if (t.closest('.social')) return 'Sosyal: ' + text;
+  if (t.getAttribute('href') === '/kvkk') return 'KVKK metni';
+  return 'Bağlantı: ' + text;
+}
+document.addEventListener('click', function (e) {
+  const t = e.target.closest ? e.target.closest('a, button') : null;
+  if (!t) return;
+  try { if (localStorage.getItem('ynk_no_track') === '1') return; } catch (err) {}
+  const label = clickLabel(t);
+  if (!label) return;
+  fetch(SB_URL + '/rest/v1/ynk_page_views', {
+    method: 'POST', headers: SB_WRITE, keepalive: true,
+    body: JSON.stringify({ page: ('click:' + label).slice(0, 190), referrer: null })
+  }).catch(function () {});
+}, true);
+
 async function readRows(path) {
   const res = await fetch(SB_URL + '/rest/v1/' + path, { headers: SB_READ });
   if (!res.ok) throw new Error(res.status);
