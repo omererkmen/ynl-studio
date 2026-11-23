@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Ekibe katıl | YNK.studio</title>
+<link rel="icon" type="image/jpeg" href="/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Layout: tek dar sütun; üstte marka, altında davetle doldurulan ekip formu. */
+:root{
+  --paper:#F4F1E4;
+  --ink:#111111;
+  --muted:#5E5A4C;
+  --line:#D6D1BD;
+  --signal:#FFD60A;
+  --card:#FBF9F0;
+  --err:#B02C08;
+  --ok:#0F7A4B;
+  --font-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+a{color:inherit}
+.wrap{max-width:640px;margin:0 auto;padding:28px clamp(18px,5vw,40px) 64px}
+.mono{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.brand{display:inline-flex;align-items:center;gap:12px;text-decoration:none;font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:-.02em}
+.brand img{display:block;width:44px;height:44px;border-radius:10px}
+h1{font-family:var(--font-display);font-weight:800;font-size:clamp(36px,7vw,56px);line-height:1;letter-spacing:-.035em;margin:44px 0 14px;text-wrap:balance}
+h1 mark{background:var(--signal);color:inherit;padding:0 .12em;border-radius:.1em}
+.lede{color:var(--muted);max-width:52ch}
+form{background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:16px;margin-top:28px}
+label.f{display:block}
+label.f > span{display:block;margin-bottom:6px}
+label.f small{display:block;font-size:13px;color:var(--muted);margin-top:5px}
+input[type=text],input[type=email],input[type=url],textarea{width:100%;font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:12px 14px}
+textarea{min-height:96px;resize:vertical}
+.photo-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.avatar{flex:none;width:84px;height:84px;border-radius:14px;background:var(--signal);border:1px solid var(--ink);overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:34px}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;color:var(--muted)}
+.consent input{flex:none;width:17px;height:17px;margin-top:2px;accent-color:var(--ink)}
+.btn{font:inherit;font-weight:600;cursor:pointer;background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);border-radius:10px;padding:13px 22px;transition:background .15s,color .15s}
+.btn:hover{background:var(--signal);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink);padding:8px 14px;font-size:14px}
+.btn[disabled]{opacity:.6;cursor:progress}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.msg{font-size:14px;min-height:1.4em;color:var(--muted)}
+.msg.err{color:var(--err);font-weight:600}
+.box{background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:22px;margin-top:28px}
+.box.ok{border-color:var(--ok)}
+.box strong{font-family:var(--font-display);font-weight:800;font-size:24px;letter-spacing:-.02em;display:block;margin-bottom:6px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="brand" href="/"><img src="/logo.jpg" alt="" width="44" height="44">YNK.studio</a>
+
+  <h1><mark>Mutfağa</mark> hoş geldin.</h1>
+  <p class="lede">Yeni Nesil Kafası sitesindeki "Mutfaktakiler" bölümünde yer alman için bilgilerini doldur. Gönderdiklerin onaylandıktan sonra sitede yayınlanır.</p>
+
+  <div class="box" id="noInvite" hidden>
+    <strong>Davet bağlantısı gerekli</strong>
+    <p>Bu form yalnızca sana gönderilen davet bağlantısıyla açılır. Bağlantıyı aldığın kişiden tam adresi tekrar iste.</p>
+  </div>
+
+  <div class="box ok" id="done" hidden>
+    <strong>Bilgilerin bize ulaştı</strong>
+    <p>Onaylandıktan sonra sitede görüneceksin. Bir düzeltme gerekirse davet eden kişiye yazman yeterli.</p>
+  </div>
+
+  <form id="join" novalidate hidden>
+    <label class="f" for="name"><span class="mono">Ad soyad</span><input type="text" id="name" autocomplete="name" maxlength="120" required></label>
+    <label class="f" for="role"><span class="mono">Rol</span><input type="text" id="role" maxlength="120" placeholder="Örn. Yapımcı, Editör, Topluluk"></label>
+    <label class="f" for="bio"><span class="mono">Kısa tanıtım</span><textarea id="bio" maxlength="400" placeholder="Bir iki cümleyle kendini anlat."></textarea></label>
+    <label class="f" for="link"><span class="mono">Bağlantı</span><input type="url" id="link" maxlength="300" placeholder="https://linkedin.com/in/..."><small>Adına tıklayınca açılacak sayfa. Boş bırakabilirsin.</small></label>
+    <label class="f" for="email"><span class="mono">E-posta</span><input type="email" id="email" autocomplete="email" inputmode="email" maxlength="254"><small>Sitede görünmez; yalnızca sana ulaşmak için.</small></label>
+    <div>
+      <span class="mono" style="display:block;margin-bottom:8px">Fotoğraf</span>
+      <div class="photo-row">
+        <div class="avatar" id="preview">?</div>
+        <input type="file" id="photo" accept="image/*" aria-label="Fotoğraf seç">
+        <button type="button" class="btn ghost" id="photoClear" hidden>Fotoğrafı kaldır</button>
+      </div>
+      <small style="display:block;font-size:13px;color:var(--muted);margin-top:8px">Kare kırpılıp küçültülerek gönderilir.</small>
+    </div>
+    <label class="consent" for="consent"><input type="checkbox" id="consent"><span><a href="/kvkk" target="_blank" rel="noopener">Aydınlatma Metni</a>'ni okudum; bu bilgilerimin ve fotoğrafımın ynk.studio sitesinde yayınlanmak üzere işlenmesine ve bu amaçla yurt dışındaki hizmet sağlayıcılara aktarılmasına açık rıza veriyorum.</span></label>
+    <div class="hp" aria-hidden="true"><label for="web">Bu alanı boş bırak</label><input type="text" id="web" tabindex="-1" autocomplete="off"></div>
+    <div><button class="btn" type="submit" id="send">Gönder</button></div>
+    <p class="msg" id="note" role="status" aria-live="polite"></p>
+  </form>
+</div>
+
+<script>
+// Davetle doldurulan ekip formu. Kayıtlar ynk_team_requests tablosuna düşer; admin onaylayınca sitede yayınlanır.
+const SB_URL = 'https://nrltvzxnqgqmxxvlaacq.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybHR2enhucWdxbXh4dmxhYWNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5ODE5MzcsImV4cCI6MjA4NzU1NzkzN30.mGGSYW_CfvMNotjxC5_vwf6NevvVpjwsudf11NH2CAY';
+const SB_WRITE = { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' };
+const $ = (id) => document.getElementById(id);
+const PAGE = '/ekibe-katil';
+
+let invite = '';
+try { invite = (new URLSearchParams(location.search).get('k') || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64); } catch (e) {}
+let photo = null;
+
+function track(page) {
+  try { if (localStorage.getItem('ynk_no_track') === '1') return; } catch (e) {}
+  fetch(SB_URL + '/rest/v1/ynk_page_views', {
+    method: 'POST', headers: SB_WRITE, keepalive: true,
+    body: JSON.stringify({ page: page.slice(0, 190), referrer: null })
+  }).catch(function () {});
+}
+
+if (!invite) {
+  $('noInvite').hidden = false;
+} else {
+  $('join').hidden = false;
+  // Form görüntülenmesi oturum başına bir kez sayılır; dönüşüm oranının paydası budur.
+  let seen = false;
+  try { seen = !!sessionStorage.getItem('pv:' + PAGE); sessionStorage.setItem('pv:' + PAGE, '1'); } catch (e) {}
+  if (!seen) track(PAGE);
+}
+
+function drawPreview() {
+  const box = $('preview'); box.replaceChildren();
+  if (photo) { const img = document.createElement('img'); img.src = photo; img.alt = ''; box.append(img); }
+  else box.textContent = ($('name').value.trim().charAt(0) || '?').toLocaleUpperCase('tr-TR');
+  $('photoClear').hidden = !photo;
+}
+// Seçilen görseli ortadan kare kırpar, 320 piksele küçültür ve JPEG veri adresine çevirir.
+function shrinkImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const side = Math.min(img.naturalWidth, img.naturalHeight), size = 320;
+      const c = document.createElement('canvas'); c.width = size; c.height = size;
+      const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, size, size);
+      ctx.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', 0.82));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+    img.src = url;
+  });
+}
+function say(text, isError) { $('note').textContent = text; $('note').className = 'msg' + (isError ? ' err' : ''); }
+
+$('photo').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0]; if (!file) return;
+  try { photo = await shrinkImage(file); say(''); } catch (err) { photo = null; e.target.value = ''; say('Bu dosya görsel olarak açılamadı. JPG ya da PNG seç.', true); }
+  drawPreview();
+});
+$('photoClear').addEventListener('click', () => { photo = null; $('photo').value = ''; drawPreview(); });
+$('name').addEventListener('input', () => { if (!photo) drawPreview(); });
+
+$('join').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if ($('web').value) return; // bot tuzağı
+  track('click:Ekip formu: Gönder');
+  const name = $('name').value.trim(), link = $('link').value.trim(), mail = $('email').value.trim().toLowerCase();
+  if (!name) { say('Adını ve soyadını yaz.', true); $('name').focus(); return; }
+  if (link && !/^https?:\/\//i.test(link)) { say('Bağlantı https:// ile başlamalı.', true); $('link').focus(); return; }
+  if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) { say('Geçerli bir e-posta adresi yaz ya da alanı boş bırak.', true); $('email').focus(); return; }
+  if (!$('consent').checked) { say('Devam etmek için açık rıza kutusunu işaretle.', true); return; }
+  $('send').disabled = true; $('send').textContent = 'Gönderiliyor';
+  try {
+    const res = await fetch(SB_URL + '/rest/v1/ynk_team_requests', {
+      method: 'POST', headers: SB_WRITE,
+      body: JSON.stringify({ name: name, role: $('role').value.trim() || null, bio: $('bio').value.trim() || null, link: link || null, email: mail || null, photo: photo, invite: invite })
+    });
+    if (res.status === 201) { $('join').hidden = true; $('done').hidden = false; $('done').scrollIntoView({ block: 'center' }); return; }
+    if (res.status === 401 || res.status === 403) say('Davet bağlantın geçersiz ya da süresi dolmuş. Davet eden kişiden yeni bağlantı iste.', true);
+    else say('Bilgiler şu an gönderilemedi. Biraz sonra tekrar dene.', true);
+  } catch (err) {
+    say('Bağlantı kurulamadı. İnternetini kontrol edip tekrar dene.', true);
+  } finally {
+    $('send').disabled = false; $('send').textContent = 'Gönder';
+  }
+});
+</script>
+</body>
+</html>

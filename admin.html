@@ -65,6 +65,7 @@ textarea{min-height:84px;resize:vertical}
 .chart .bar{width:100%;background:var(--ink);border-radius:3px 3px 0 0}
 .axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}
 .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 20px}
+.two.conv{grid-template-columns:repeat(3,minmax(0,1fr))}
 .row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:15px}
 .row:last-child{border-bottom:0}
 .row .k{overflow-wrap:anywhere;min-width:0}
@@ -96,7 +97,7 @@ textarea{min-height:84px;resize:vertical}
 .inq .head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
 .inq .body{margin-top:8px;white-space:pre-wrap;overflow-wrap:anywhere}
 .stack{display:flex;flex-direction:column;gap:16px}
-@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.two,.editor{grid-template-columns:1fr}}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.two,.two.conv,.editor{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -136,9 +137,10 @@ textarea{min-height:84px;resize:vertical}
         <button type="button" class="small" id="r7">7 gün</button>
         <button type="button" class="small" id="r30">30 gün</button>
       </div>
-      <div class="two" style="margin-top:0">
+      <div class="two conv" style="margin-top:0">
         <div class="tile"><div class="n" id="convSub">–</div><div class="label">Bülten dönüşümü</div><p class="fine" id="convSubNote"></p></div>
         <div class="tile"><div class="n" id="convInq">–</div><div class="label">Başvuru dönüşümü</div><p class="fine" id="convInqNote"></p></div>
+        <div class="tile"><div class="n" id="convTeam">–</div><div class="label">Ekip formu dönüşümü</div><p class="fine" id="convTeamNote"></p></div>
       </div>
       <div class="panel">
         <p class="label" style="margin-bottom:14px">Günlük sayfa görüntüleme</p>
@@ -169,6 +171,11 @@ textarea{min-height:84px;resize:vertical}
     </section>
 
     <section id="team" hidden class="stack">
+      <div class="panel">
+        <h2>Ekip talepleri</h2>
+        <p class="fine" style="margin:-6px 0 10px">Davet bağlantısıyla doldurulan formlar burada bekler. Onayladığın kişi sitede "Mutfaktakiler" bölümüne eklenir.</p>
+        <div id="reqList"></div>
+      </div>
       <form class="panel" id="teamForm" novalidate>
         <h2 id="teamFormTitle">Yeni ekip üyesi</h2>
         <div class="editor">
@@ -232,7 +239,7 @@ const $ = (id) => document.getElementById(id);
 const KIND_LABEL = { bolum: "0'dan 1'e", video: 'Video', yazi: 'Yazı', diger: 'Diğer' };
 
 let session = null;   // { token, email }
-let views = [], clicks = [], subscribers = [], inquiries = [], team = [], content = [];
+let views = [], clicks = [], subscribers = [], inquiries = [], team = [], content = [], requests = [];
 let range = 30;
 let teamEditId = null, teamPhoto = null, contentEditId = null;
 
@@ -388,10 +395,11 @@ function renderStats() {
   const from = t0 - (range - 1) * DAY;
   const visits = rows.filter((v) => String(v.page || '/').split('?')[0] === '/').length;
   const firstClick = clicks.length ? Math.min(...clicks.map((c) => new Date(c.created_at).getTime())) : null;
-  const conv = (numId, noteId, list, clickName, unit) => {
+  const formViews = rows.filter((v) => String(v.page || '').split('?')[0] === '/ekibe-katil').length;
+  const conv = (numId, noteId, list, clickName, unit, visits, visitWord) => {
     const done = list.filter((x) => new Date(x.created_at).getTime() >= from).length;
     $(numId).textContent = visits ? '%' + (done / visits * 100).toLocaleString('tr-TR', { maximumFractionDigits: 1 }) : '–';
-    let note = done + ' ' + unit + ' / ' + visits + ' ziyaret (son ' + range + ' gün)';
+    let note = done + ' ' + unit + ' / ' + visits + ' ' + visitWord + ' (son ' + range + ' gün)';
     // Düğmeye basanların kaçı tamamladı: tıklama kaydı yalnızca takibin başladığı andan beri var.
     if (firstClick !== null) {
       const since = Math.max(from, firstClick);
@@ -401,8 +409,9 @@ function renderStats() {
     }
     $(noteId).textContent = note;
   };
-  conv('convSub', 'convSubNote', subscribers, 'Bülten: Haber ver', 'kayıt');
-  conv('convInq', 'convInqNote', inquiries, 'Başvuru: Gönder', 'başvuru');
+  conv('convSub', 'convSubNote', subscribers, 'Bülten: Haber ver', 'kayıt', visits, 'ziyaret');
+  conv('convInq', 'convInqNote', inquiries, 'Başvuru: Gönder', 'başvuru', visits, 'ziyaret');
+  conv('convTeam', 'convTeamNote', requests, 'Ekip formu: Gönder', 'talep', formViews, 'form görüntüleme');
 }
 $('r7').addEventListener('click', () => { range = 7; renderStats(); });
 $('r30').addEventListener('click', () => { range = 30; renderStats(); });
@@ -459,6 +468,47 @@ function renderInq() {
     acts.append(deleteButton(async () => { await deleteRow('ynk_inquiries', q.id); inquiries = inquiries.filter((x) => x.id !== q.id); }, renderInq));
     head.append(left, acts); item.append(head);
     if (q.message) item.append(el('div', 'body', q.message));
+    box.append(item);
+  });
+}
+
+/* ---------- Ekip talepleri ---------- */
+function renderRequests() {
+  const pending = requests.filter((r) => r.status !== 'onaylandi');
+  const tab = document.querySelector('#tabs [data-tab="team"]');
+  tab.textContent = pending.length ? 'Ekip (' + pending.length + ')' : 'Ekip';
+  const box = $('reqList'); box.replaceChildren();
+  if (!requests.length) { box.append(el('p', 'empty', 'Henüz talep yok.')); return; }
+  pending.concat(requests.filter((r) => r.status === 'onaylandi')).forEach((r) => {
+    const approved = r.status === 'onaylandi';
+    const item = el('div', 'inq');
+    const head = el('div', 'head');
+    const main = el('div', 'main'); main.style.display = 'flex'; main.style.gap = '12px'; main.style.alignItems = 'center'; main.style.minWidth = '0';
+    const av = el('div', 'avatar');
+    if (r.photo) { const img = el('img'); img.src = r.photo; img.alt = ''; av.append(img); } else av.textContent = (r.name || '?').charAt(0).toLocaleUpperCase('tr-TR');
+    const txt = el('div', 'txt');
+    const title = el('div', '', r.name); title.style.fontWeight = '600';
+    title.append(el('span', 'tag' + (approved ? ' off' : ''), approved ? 'Onaylandı' : 'Bekliyor'));
+    const meta = el('div', 'date', (r.role || 'Rol yok') + ' · ' + fmtDate(r.created_at));
+    txt.append(title, meta);
+    if (r.email) { const m = el('a', 'date', r.email); m.href = 'mailto:' + r.email; m.style.display = 'block'; txt.append(m); }
+    if (r.link) txt.append(el('div', 'date', r.link));
+    main.append(av, txt);
+    const acts = el('div', 'acts');
+    if (!approved) acts.append(btn('small', 'Onayla', async (e) => {
+      e.currentTarget.disabled = true; $('appMsg').textContent = '';
+      try {
+        const order = team.reduce((m, x) => Math.max(m, x.sort_order), 0) + 1;
+        const saved = await saveRow('ynk_team', null, { name: r.name, role: r.role, bio: r.bio, link: r.link, photo: r.photo, sort_order: order, is_visible: true });
+        team = team.concat(saved); renderTeam();
+        const upd = await saveRow('ynk_team_requests', r.id, { status: 'onaylandi' });
+        requests = requests.map((x) => (x.id === r.id ? { ...x, status: upd.status } : x));
+      } catch (err) { fail(err); }
+      renderRequests();
+    }));
+    acts.append(deleteButton(async () => { await deleteRow('ynk_team_requests', r.id); requests = requests.filter((x) => x.id !== r.id); }, renderRequests));
+    head.append(main, acts); item.append(head);
+    if (r.bio) item.append(el('div', 'body', r.bio));
     box.append(item);
   });
 }
@@ -598,7 +648,7 @@ async function load(label, fn) {
 async function start() {
   $('login').hidden = true; $('app').hidden = false;
   $('who').textContent = session.email; $('appMsg').textContent = '';
-  renderOwn(); resetTeamForm(); resetContentForm();
+  renderOwn(); resetTeamForm(); resetContentForm(); renderRequests();
   const since = new Date(startOfToday() - 29 * DAY).toISOString();
   try {
     await Promise.all([
@@ -615,6 +665,7 @@ async function start() {
       load('Aboneler', async () => { subscribers = await fetchAll('ynk_subscribers', 'select=id,email,created_at&order=created_at.desc'); renderSubs(); }),
       load('Başvurular', async () => { inquiries = await fetchAll('ynk_inquiries', 'select=id,name,org,email,kind,message,created_at&order=created_at.desc'); renderInq(); }),
       load('Ekip', async () => { team = await fetchAll('ynk_team', 'select=id,name,role,bio,photo,link,sort_order,is_visible,created_at&order=sort_order.asc'); renderTeam(); }),
+      load('Ekip talepleri', async () => { requests = await fetchAll('ynk_team_requests', 'select=id,name,role,bio,photo,link,email,status,created_at&order=created_at.desc'); renderRequests(); }),
       load('İçerikler', async () => { content = await fetchAll('ynk_content', 'select=id,title,url,kind,sort_order,is_visible,created_at&order=sort_order.asc'); renderContent(); })
     ]);
     renderStats(); // dönüşüm oranları abone ve başvuru listeleri geldikten sonra hesaplanır
